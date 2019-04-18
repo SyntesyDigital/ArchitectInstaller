@@ -84,13 +84,18 @@ class ArchitectInstall extends Command
         $path = app_path('../Modules/');
 
         if (!is_dir($path)) {
+            $this->info('--- CREATING MODULES DIRECTORY  ----');
             $this->info('Creating directory ' . $path);
-            mkdir($path, 0775);
+            if(mkdir($path, 0775)) {
+                $this->info('... DONE');
+            }
         }
 
-        // Install Laravel Module
+        // Install Laravel Module vendor
         if(!class_exists('Nwidart\\Modules\\ModulesServiceProvider')) {
+            $this->info('--- INSTALLING LARAVEL MODULES PACKAGE ----');
             exec('composer require nwidart/laravel-modules');
+            $this->info('... DONE');
         }
 
         $package = $this->getPackageByName($this->package);
@@ -101,13 +106,19 @@ class ArchitectInstall extends Command
         }
 
         // Clone Module directory
+        $this->info('--- (1/3) CLONING REPOSITORY ----');
         exec("git clone ".$package["url"]."  Modules/" . $package["directory"]);
+        $this->info('... DONE');
 
         // Dump autoload
+        $this->info('--- (2/3) DUMP AUTOLOAD ----');
         exec('composer dumpautoload');
+        $this->info('... DONE');
 
         // Migrate module DB
+        $this->info('--- (3/3) MIGRATE MODULE DB ----');
         exec('php artisan module:migrate ' . $package["directory"]);
+        $this->info('... DONE');
     }
 
 
