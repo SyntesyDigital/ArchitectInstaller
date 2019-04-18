@@ -103,6 +103,9 @@ class ArchitectInstall extends Command
         // Clone Module directory
         exec("git clone ".$package["url"]."  Modules/" . $package["directory"]);
 
+        // Dump autoload
+        exec('composer dumpautoload');
+
         // Migrate module DB
         exec('php artisan module:migrate ' . $package["directory"]);
     }
