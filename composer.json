@@ -1,0 +1,24 @@
+{
+  "name": "syntesy-digital/architect-installer",
+  "description": "Architect installer package",
+  "authors": [
+    {
+      "name": "SyntesyDigital",
+      "email": "ndelcast.dev@gmail.com"
+    }
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "SyntesyDigital\\ArchitectInstaller\\ArchitectInstallerProvider"
+      ]
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "SyntesyDigital\\ArchitectInstaller\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {}
+}
