@@ -21,6 +21,7 @@
     }
   },
   "require": {
-    "nwidart/laravel-modules": "^4.1"
+    "nwidart/laravel-modules": "^4.1",
+    "daftspunk/laravel-config-writer" : "dev-master"
   }
 }
