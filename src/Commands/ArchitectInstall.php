@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 
 class ArchitectInstall extends Command
 {
-
     private $packages = [
 
         [
@@ -15,24 +14,65 @@ class ArchitectInstall extends Command
             'url' => 'https://github.com/SyntesyDigital/ArchitectCore',
             'directory' => 'Architect',
             'vendors' => [
-                "barryvdh/laravel-cors",
-                "doctrine/dbal",
-                "intervention/image",
-                "jenssegers/date",
-                "kalnoy/nestedset",
-                "laravelcollective/html",
-                "prettus/l5-repository",
-                "yajra/laravel-datatables-oracle",
-                "zizaco/entrust",
-            ],
-            'providers' => [
-                'Zizaco\Entrust\EntrustServiceProvider',
-                'Yajra\DataTables\DataTablesServiceProvider',
-                'Mariuzzo\LaravelJsLocalization\LaravelJsLocalizationServiceProvider',
-            ],
-            'facades' => [
-                'Entrust' => 'Zizaco\Entrust\EntrustFacade::class',
-                'Datatables' => 'Yajra\DataTables\Facades\DataTables::class',
+                [
+                    "package" => "barryvdh/laravel-cors",
+                    "version" => "^0.11.3"
+                ],
+
+                [
+                    "package" => "doctrine/dbal",
+                    "version" => "^2.9"
+                ],
+
+                [
+                    "package" => "intervention/image",
+                    "version" => "^2.4"
+                ],
+
+                [
+                    "package" => "jenssegers/date",
+                    "version" => "^3.5"
+                ],
+
+                [
+                    "package" => "kalnoy/nestedset",
+                    "version" => "^4.3"
+                ],
+
+                [
+                    "package" => "laravelcollective/html",
+                    "version" => "^5.4.0"
+                ],
+
+                [
+                    "package" => "prettus/l5-repository",
+                    "version" => "^2.6"
+                ],
+
+                [
+                    "package" => "yajra/laravel-datatables-oracle",
+                    "version" => "~8.0"
+                ],
+
+                [
+                    "package" => "mariuzzo/laravel-js-localization",
+                    "version" => "^1.4"
+                ],
+
+                [
+                    "package" => "mcamara/laravel-localization",
+                    "version" => "^1.3"
+                ],
+
+                [
+                    "package" => "elasticsearch/elasticsearch",
+                    "version" => "^6.0"
+                ],
+
+                [
+                    "package" => "kevindierkx/laravel-domain-localization",
+                    "version" => "^2.0"
+                ]
             ],
             'webpack' => [
 
@@ -112,16 +152,8 @@ class ArchitectInstall extends Command
             }
         }
 
-        // Install Laravel Module vendor
-        if(!class_exists('Nwidart\\Modules\\ModulesServiceProvider')) {
-            $this->info('--- INSTALLING LARAVEL MODULES PACKAGE ----');
-            exec('composer require nwidart/laravel-modules');
-            $this->info('... DONE');
-        }
-
         // Get package to install
         $package = $this->getPackageByName($this->package);
-
 
 
         if(!$package) {
@@ -164,8 +196,8 @@ class ArchitectInstall extends Command
         $this->info('--- (3/4) INSTALLING VENDORS ----');
         if(isset($package["vendors"])) {
             foreach($package["vendors"] as $vendor) {
-                $this->info("... INSTALLING $vendor");
-                exec("composer require $vendor");
+                $this->info("... INSTALLING " . $vendor["package"]);
+                exec("composer require " . $vendor["package"] . " " . $vendor["version"]);
             }
             $this->info('... FINISH');
         } else {
