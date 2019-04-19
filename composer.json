@@ -20,5 +20,7 @@
       "SyntesyDigital\\ArchitectInstaller\\": "src/"
     }
   },
-  "require": {}
+  "require": {
+    "nwidart/laravel-modules": "^4.1"
+  }
 }
