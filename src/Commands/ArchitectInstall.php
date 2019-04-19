@@ -14,7 +14,24 @@ class ArchitectInstall extends Command
             'name' => 'ArchitectCore',
             'description' => 'Core package of Syntesy Architect solution',
             'url' => 'https://github.com/SyntesyDigital/ArchitectCore',
-            'directory' => 'Architect'
+            'directory' => 'Architect',
+            'vendors' => [
+                "acoustep/entrust-gui",
+                "barryvdh/laravel-cors",
+                "barryvdh/laravel-debugbar",
+                "doctrine/dbal",
+                "intervention/image",
+                "jenssegers/date",
+                "kalnoy/nestedset",
+                "laravelcollective/html",
+                "predis/predis",
+                "prettus/l5-repository",
+                "prettus/laravel-validation",
+                "toin0u/geocoder-laravel",
+                "tymon/jwt-auth",
+                "yajra/laravel-datatables-oracle",
+                "zizaco/entrust",
+            ]
         ],
 
     ];
@@ -98,22 +115,44 @@ class ArchitectInstall extends Command
             $this->info('... DONE');
         }
 
+        // Get package to install
         $package = $this->getPackageByName($this->package);
+
+        if(!$package) {
+            $this->error("$package no found");
+            return false;
+        }
 
         if(is_dir($path . $package["directory"])) {
             $this->error('Module '.$package["name"].' is already installed');
             return false;
         }
 
+
         // Clone Module directory
-        $this->info('--- (1/3) CLONING REPOSITORY ----');
+        $this->info('--- (1/4) CLONING REPOSITORY ----');
         exec("git clone ".$package["url"]."  Modules/" . $package["directory"]);
         $this->info('... DONE');
 
+
+        // Install dependencies
+        $this->info('--- (3/4) INSTALLING DEPENDENCIES ----');
+        if(isset($package["vendors"])) {
+            foreach($package["vendors"] as $vendor) {
+                $this->info("... INSTALLING $vendor");
+                exec("composer require $vendor");
+            }
+            $this->info('... FINISH');
+        } else {
+            $this->info('... NOTHING TO INSTALL');
+        }
+
+
         // Dump autoload
-        $this->info('--- (2/3) DUMP AUTOLOAD ----');
+        $this->info('--- (2/4) DUMP AUTOLOAD ----');
         exec('composer dumpautoload');
         $this->info('... DONE');
+
 
         // Migrate module DB
         $this->info('--- (3/3) MIGRATE MODULE DB ----');
