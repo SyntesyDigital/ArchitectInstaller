@@ -9,7 +9,6 @@ class ArchitectInstall extends Command
 
     private $packages = [
 
-        // Architect Core
         [
             'name' => 'ArchitectCore',
             'description' => 'Core package of Syntesy Architect solution',
@@ -27,13 +26,11 @@ class ArchitectInstall extends Command
                 "zizaco/entrust",
             ],
             'providers' => [
-                'Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class',
-                'Zizaco\Entrust\EntrustServiceProvider::class',
-                'Yajra\DataTables\DataTablesServiceProvider::class',
-                'Mariuzzo\LaravelJsLocalization\LaravelJsLocalizationServiceProvider::class',
+                'Zizaco\Entrust\EntrustServiceProvider',
+                'Yajra\DataTables\DataTablesServiceProvider',
+                'Mariuzzo\LaravelJsLocalization\LaravelJsLocalizationServiceProvider',
             ],
             'facades' => [
-                'LaravelLocalization' => 'Mcamara\LaravelLocalization\Facades\LaravelLocalization::class',
                 'Entrust' => 'Zizaco\Entrust\EntrustFacade::class',
                 'Datatables' => 'Yajra\DataTables\Facades\DataTables::class',
             ],
@@ -43,7 +40,6 @@ class ArchitectInstall extends Command
         ],
 
     ];
-
 
     /**
      * The name and signature of the console command.
@@ -106,7 +102,7 @@ class ArchitectInstall extends Command
             return false;
         }
 
-        $path = app_path('../Modules/');
+        $path = base_path('Modules/');
 
         if (!is_dir($path)) {
             $this->info('--- CREATING MODULES DIRECTORY  ----');
@@ -125,6 +121,8 @@ class ArchitectInstall extends Command
 
         // Get package to install
         $package = $this->getPackageByName($this->package);
+
+
 
         if(!$package) {
             $this->error("$package no found");
