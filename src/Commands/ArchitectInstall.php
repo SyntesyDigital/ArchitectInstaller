@@ -75,7 +75,17 @@ class ArchitectInstall extends Command
                 ]
             ],
             'webpack' => [
-
+                "dependencies" => [
+                    "@babel/core" => "^7.3.4",
+                    "@babel/preset-env" => "^7.3.4",
+                    "bootstrap-sass" => "^3.3.7",
+                    "browser-sync" => "^2.24.4",
+                    "browser-sync-webpack-plugin" => "^2.2.2",
+                    "copy-webpack-plugin" => "^4.6.0",
+                    "laravel-localization-loader" => "^1.0.5",
+                    "webpack-shell-plugin" => "^0.5.0",
+                    "import-file" => "^1.4.0",
+                ]
             ]
         ],
 
@@ -156,6 +166,8 @@ class ArchitectInstall extends Command
         $package = $this->getPackageByName($this->package);
 
 
+
+
         if(!$package) {
             $this->error("$package no found");
             return false;
@@ -166,9 +178,9 @@ class ArchitectInstall extends Command
             return false;
         }
 
-        $this->installDependencies($package);
-
+        $this->installComposerDependencies($package);
         $this->installPackage($package);
+        $this->installNpmDependencies($package);
 
         // Dump autoload
         $this->info('--- (2/4) DUMP AUTOLOAD ----');
@@ -190,18 +202,29 @@ class ArchitectInstall extends Command
         $this->info('... DONE');
     }
 
-    private function installDependencies($package)
+    private function installNpmDependencies($package)
     {
-        // Install dependencies
-        $this->info('--- (3/4) INSTALLING VENDORS ----');
+
+        if(isset($package["webpack"]["dependencies"])) {
+            $this->info('--- INSTALLING NPM DEPENDENCIES ----');
+            foreach($package["webpack"]["dependencies"] as $name => $version) {
+                $this->info("  -> " . $name);
+                exec("npm install " . $name . "@" . $version);
+            }
+            $this->info('=> DONE');
+        }
+    }
+
+
+    private function installComposerDependencies($package)
+    {
         if(isset($package["vendors"])) {
+            $this->info('--- INSTALLING COMPOSER VENDORS ----');
             foreach($package["vendors"] as $vendor) {
-                $this->info("... INSTALLING " . $vendor["package"]);
+                $this->info("  -> " . $vendor["package"]);
                 exec("composer require " . $vendor["package"] . " " . $vendor["version"]);
             }
-            $this->info('... FINISH');
-        } else {
-            $this->info('... NOTHING TO INSTALL');
+            $this->info('=> DONE');
         }
     }
 
