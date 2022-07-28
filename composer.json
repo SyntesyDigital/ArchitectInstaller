@@ -21,6 +21,6 @@
     }
   },
   "require": {
-    "nwidart/laravel-modules": "^4.1"
+    "nwidart/laravel-modules": ">=4.1"
   }
 }
